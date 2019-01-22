@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<!--可以让部分国产浏览器默认采用高速模式渲染页面-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!--让 IE 浏览器运行最新的渲染模式-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--确保适当的绘制和触屏缩放-->
+<meta name="description" content="" />
+<!--网站描述-->
+<meta name="keywords" content="" />
+<!--网站关键字-->
+
+<link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="../css/amazeui.min.css"/>
+<link rel="stylesheet" href="../css/admin.css">
+<title>title</title>
+</head>
+<body>
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <i class="am-header-icon am-icon-bars am-icon-sm"></i><strong>中间平台管理系统</strong>
+  </div>
+  <div class="am-topbar-brand">
+                    <strong>渠道：</strong>	<select id = "channle" name= "channle">
+								</select>
+                </div>
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+    </ul>
+  </div>
+</header>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="js/amazeui.ie8polyfill.min.js"></script>
+<![endif]--> 
+
+<!--[if (gte IE 9)|!(IE)]><!--> 
+<script src="../js/jquery.min.js"></script>
+<!--<![endif]--> 
+<script src="../js/amazeui.min.js"></script>
+<script type="text/javascript">
+	var opts = "";
+	$.post("../getChannel.do",{},function(data){
+		$.each(data.data.list,function(i,val){
+			opts = opts+"<option value =\""+val.channelId+"\">"+val.channelName+"</option>";
+		});
+		$("#channle").html(opts);
+	})	
+</script>
+</body>
+</html>

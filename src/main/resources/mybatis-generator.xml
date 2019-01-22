@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<classPathEntry location="D:/maven/repository/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar" />
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+
+		<plugin type="com.unis.tools.PaginationPlugin" />
+		<commentGenerator>
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+						connectionURL="jdbc:mysql://127.0.0.1:3306/up_user?characterEncoding=utf8"
+						userId="user"
+			password="123456">
+		</jdbcConnection>
+
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+
+		<javaModelGenerator targetPackage="com.unis.model"
+			targetProject="backend/src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+
+		<sqlMapGenerator targetPackage="mybatis"
+			targetProject="backend/src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.unis.dao.mybatis" targetProject="backend/src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+
+
+		<!-- <table schema="" tableName="t_app_config" domainObjectName="AppConfig"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/>-->
+		<!-- <table schema="" tableName="t_app_info" domainObjectName="AppInfo"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/> -->
+		<!-- <table schema="" tableName="t_channel_config" domainObjectName="ChannelConfig"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/> -->
+		<!-- <table schema="" tableName="t_dau_record" domainObjectName="DAURecord"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/> -->
+		<!-- <table schema="" tableName="t_app_statistics" domainObjectName="AppStatistics"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/> -->
+		<!--<table schema="" tableName="t_trans_history" domainObjectName="TranHistory"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/>
+		<table schema="" tableName="t_transactions_history" domainObjectName="TransactionHistory"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/>-->
+		<table schema="" tableName="t_user" domainObjectName="User"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/>
+		<!-- <table schema="" tableName="t_user_official_config" domainObjectName="OfficialConfig"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/>-->
+		<!-- <table schema="" tableName="t_withdraw_cash_tmp" domainObjectName="WithdrawCash"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/>  -->
+		<!-- <table schema="" tableName="t_backend_admin" domainObjectName="Admin"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/> -->
+		<!-- <table schema="" tableName="v_transaction_withdraw" domainObjectName="TransactionWithDraw"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   enableUpdateByExample="false" enableSelectByExample="false"/>  -->
+	</context>
+
+</generatorConfiguration>

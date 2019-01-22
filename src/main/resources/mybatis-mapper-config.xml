@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+
+
+    <settings>
+        <setting name="cacheEnabled" value="true" />
+        <setting name="lazyLoadingEnabled" value="true" />
+        <setting name="multipleResultSetsEnabled" value="true" />
+        <setting name="useColumnLabel" value="true" />
+        <setting name="useGeneratedKeys" value="true" />
+        <setting name="defaultExecutorType" value="SIMPLE" />
+    </settings>
+    <mappers>
+        <mapper resource="mybatis/AppConfigMapper.xml" />
+        <mapper resource="mybatis/AppInfoMapper.xml" />
+        <mapper resource="mybatis/ChannelConfigMapper.xml" />
+        <mapper resource="mybatis/DAURecordMapper.xml" />
+        <mapper resource="mybatis/TranHistoryMapper.xml" />
+        <mapper resource="mybatis/TransactionHistoryMapper.xml" />
+        <mapper resource="mybatis/OfficialConfigMapper.xml" />
+        <mapper resource="mybatis/WithdrawCashMapper.xml" />
+        <mapper resource="mybatis/AdminMapper.xml" />
+        <mapper resource="mybatis/UserMapper.xml" />
+        <mapper resource="mybatis/TransactionWithDrawMapper.xml" />
+        <mapper resource="mybatis/AppStatisticsMapper.xml" />
+    </mappers>
+</configuration>

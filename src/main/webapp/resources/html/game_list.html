@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <!--可以让部分国产浏览器默认采用高速模式渲染页面-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--让 IE 浏览器运行最新的渲染模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--确保适当的绘制和触屏缩放-->
+    <meta name="description" content=""/>
+    <!--网站描述-->
+    <meta name="keywords" content=""/>
+    <!--网站关键字-->
+    <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/amazeui.min.css"/>
+    <link rel="stylesheet" href="../css/amazeui.page.css"/>
+    <link rel="stylesheet" href="../css/admin.css">
+    <title>中间平台管理系统</title>
+</head>
+
+<body class="admin_content">
+
+<div class="am-cf">
+    <div class="admin_title">游戏列表</div>
+    <div class="am-panel am-panel-default admin_panel">
+        <form class="am-form" action="#" id="bet_list">
+            <div class="ad-select">
+				<div class="am-form-group">
+                    状态：	<select id = "status" name= "status">
+								  <option value ="">全部</option>
+								  <option value ="1">发布</option>
+								  <option value="0">下架</option>
+								</select>
+                </div>
+                <div class="am-form-group">
+                    游戏名：<input type="text" class="am-form-field" placeholder="游戏名" id="game"
+                                name="game">
+                </div>
+                <div class="admin_search">
+                    <a href="javascript:search()">搜索</a>
+                    <a href="javascript:remove()" class="r-bg">清空</a>
+                </div>
+            </div>
+        </form>
+
+        <div class="am-g">
+
+            <table class="am-table am-table-striped am-table-hover admin_table">
+                <thead>
+                <tr>
+					<th>图标</th>
+                    <th>游戏名称</th>
+                    <th>游戏介绍</th>
+                    <th>热度</th>
+					<th>标签</th>
+					<th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="t_page"></tbody>
+
+            </table>
+            <div class="am-cf admin_page">共<span
+                    id="ad_count">2</span>项
+                <div class="am-fr" id="page_refresh">
+                    <div id="page"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="am-modal am-modal-confirm" tabindex="-1" id="agree_confirm">
+    <div class="am-modal-dialog">
+        <div class="am-modal-bd" id="agree_comfirm_msg">
+            是否确定修改发布状态？
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+            <span class="am-modal-btn" data-am-modal-confirm>确定</span>
+        </div>
+    </div>
+</div>
+<script src="../js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="../js/amazeui.min.js"></script>
+<script src="../js/amazeui.page.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/laydate/laydate.js" charset="UTF-8"></script>
+<script type="text/javascript">
+	function changeStatus(row){
+		var status = $("#row_status_"+row).text()=="发布"?0:1;
+		$.ajax({
+			url:"../updateApps.do",
+			dataType:"json",
+			type:"post",
+			contentType : "application/json",
+			data:JSON.stringify({
+				channel:parseInt($("#row_channel_"+row).text()),
+				appId:parseInt($("#row_appid_"+row).text()),
+				status:status,
+				tags:null,
+				comment:null,
+				hot:null
+			}),
+			success:function(data){
+				if(data.code==1){
+					if(status==1){
+						$("#row_op_"+row).text("下架");
+						$("#row_status_"+row).text("发布");
+					}else{
+						$("#row_op_"+row).text("发布");
+						$("#row_status_"+row).text("下架");
+					}
+				}else if(data.code==0){
+					returnLogin();
+				}else{
+					alert(data.message);
+				}				
+			}
+		})
+	}
+	
+	function changeStatusWarning(row){
+		var text = "是否确定";
+		if($("#row_status_"+row).text()=="发布"){
+			text = text+"下架";
+		}else{
+			text = text+"发布";
+		}
+		text = text + $("#row_title_"+row).text()+"?";
+		$("#agree_comfirm_msg").text(text);
+		$('#agree_confirm').modal({
+			relatedTarget: {"row":row},
+			onConfirm: function(options) {
+			  changeStatus(this.relatedTarget.row);
+			},
+			// closeOnConfirm: false,
+			onCancel: function() {
+			}
+		});
+	}
+	
+	function insertTable(data){
+		var table = "";
+		$.each(data.data.list,function(i,val){
+			table = table + "<tr>";
+			table = table + "<td><img src='"+getValue(val.iconUrl)+"'/></td>";
+			table = table + "<td id=\"row_title_"+i+"\">"+getValue(val.title)+"</td>";
+			table = table + "<td id=\"row_appid_"+i+"\" hidden>"+val.appId+"</td>";
+			table = table + "<td id=\"row_channel_"+i+"\" hidden>"+val.channelId+"</td>";
+			table = table + "<td>"+getValue(val.description)+"</td>";
+			table = table + "<td>"+val.playerCount+"</td>";
+			var tag = getValue(val.target);
+			var cont = "";
+			if(getValue(val.target)!=""){
+				var ts = tag.split(",");
+				for(var j = 0;j<ts.length;j++){
+					if(ts[j]=="1"){
+						cont =cont +"热门 ";
+					}else if(ts[j]=="2"){
+						cont =cont +"新 ";
+					}else if(ts[j]=="3"){
+						cont =cont +"推荐 ";
+					}
+				}
+			}
+			table = table + "<td>"+cont+"</td>";
+			if(val.status==1){
+				table = table + "<td id=\"row_status_"+i+"\">发布</td>";
+			}else{
+				table = table + "<td id=\"row_status_"+i+"\">下架</td>";
+			}
+			table = table + "<td><a href=\"edit_app.html?channel="+val.channelId+"&app="+val.appId+"\" target=\"mainframe\" class=\"am-btn am-btn-default am-radius admin_whitebg\">编辑</a>";
+			var ban = val.status==1?"下架":"发布";
+			table = table + "<a href=\"javascript:changeStatusWarning("+i+");\" target=\"mainframe\" class=\"am-btn am-btn-default am-radius admin_whitebg\" id=\"row_op_"+i+"\">"+ban+"</a></td>";
+			table = table + "</tr>";
+		})
+		$("#t_page").html(table);
+	}
+	
+	
+	
+    function showTable(page,pageSize,func) {
+		var status = $("#status").val();
+		status=status==""?null:status;
+		var game = $("#game").val();
+		game=game==""?null:game;
+		$.ajax({
+			url:"../getGames.do",
+			dataType:"json",
+			type:"post",
+			contentType : "application/json",
+			data:JSON.stringify({
+				status:status,
+				name:game,
+				channel:getChannel(),
+				pageNum:page,
+				pageSize:pageSize
+			}),
+			success:function(data){
+				if(data.code==1){
+					successOperater(data,pageSize,func);
+				}else if(data.code==0){
+					returnLogin();
+				}else{
+					alert(data.message);
+				}
+			}
+		})
+    }
+	var pageSize = 10;
+	showTable(1,pageSize,showPage);
+    function remove() {
+        $("#status").val("");
+        $("#game").val("");
+        //formSubmit();
+    };
+</script>
+</body>
+</html>

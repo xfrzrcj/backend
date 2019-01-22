@@ -1,0 +1,36 @@
+* {
+	margin:0;
+	padding:0;
+	
+}
+
+body{ min-width:960px;
+	font-family: "Microsoft YaHei",微软雅黑,"MicrosoftJhengHei",华文细黑,STHeiti,MingLiu;
+	font-size: 14px;
+	color: #333;
+	text-decoration: none;
+	text-align: center;
+	list-style-type: none;
+	background-image: url(../images/bg.png);
+	background-repeat: repeat; 
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;	/* Firefox */
+    -webkit-box-sizing:border-box;	/* Safari */
+}
+a{
+	color:#333; cursor: pointer;
+	text-decoration: none;
+	outline:none;
+}
+a img{border: none;}
+
+li{list-style-type: none;}
+
+input{ vertical-align:middle; outline:none;}
+strong{ font-weight:normal; outline:none;}
+
+p{ text-indent:2em; text-align: left;}
+.all{ width:100%;}
+.clear{ clear:both;} 
+
+button{cursor: pointer;}

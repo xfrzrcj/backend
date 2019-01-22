@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <!--可以让部分国产浏览器默认采用高速模式渲染页面-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--让 IE 浏览器运行最新的渲染模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--确保适当的绘制和触屏缩放-->
+    <meta name="description" content=""/>
+    <!--网站描述-->
+    <meta name="keywords" content=""/>
+    <!--网站关键字-->
+    <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/amazeui.min.css"/>
+    <link rel="stylesheet" href="../css/amazeui.page.css"/>
+    <link rel="stylesheet" href="../css/admin.css">
+    <title>中间平台管理系统</title>
+</head>
+<body class="admin_content" onload="isLoaded()">
+
+<div class="am-cf">
+    <div class="admin_title">日活数据</div>
+    <div class="am-panel am-panel-default admin_panel">
+        <form class="am-form" action="day_activity_list.do" method="post" id="bet_list">
+            <div class="ad-select">
+                <div class="am-form-group">
+                    开始时间：<input type="text" id="start_time" name="start_time" placeholder="选择开始时间">
+                </div>
+                <div class="am-form-group">
+                    结束时间：<input type="text" id="stop_time" name="stop_time" placeholder="选择结束时间">
+                </div>
+                <div class="admin_search">
+                    <a href="javascript:search()">搜索</a>
+                    <a href="javascript:remove()" class="r-bg">清空</a>
+                </div>
+            </div>
+        </form>
+        <div class="am-g">
+
+            <table class="am-table am-table-striped am-table-hover admin_table">
+                <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>日增</th>
+                    <th>日活</th>
+					<th>当日充值</th>
+					<th>当日提现</th>
+					<th>当日从平台划出</th>
+					<th>当日向平台划入</th>
+					<th>付费用户数</th>
+                </tr>
+                </thead>
+
+                <tbody id="t_page">
+
+                </tbody>
+            </table>
+            <div class="am-cf admin_page">共<span id="ad_count"></span>项
+                <div class="am-fr">
+                    <div id="page"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="../js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="../js/amazeui.min.js"></script>
+<script src="../js/amazeui.page.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/laydate/laydate.js" charset="UTF-8"></script>
+<script type="text/javascript">
+	
+	function insertTable(data){
+		var table = "";
+		$.each(data.data.list,function(i,val){
+			table = table + "<tr>";
+			table = table + "<td>"+getValue(val.date).substring(0,10)+"</td>";
+			table = table + "<td>"+getValue(val.register)+"</td>";
+			table = table + "<td>"+getValue(val.active)+"</td>";
+			table = table + "<td>"+getValue(val.totalRecharge)+"</td>";
+			table = table + "<td>"+getValue(val.totalWithdraw)+"</td>";
+			table = table + "<td>"+getValue(val.outMoney)+"</td>";
+			table = table + "<td>"+getValue(val.inMoney)+"</td>";
+			table = table + "<td>"+getValue(val.totalPayAccount)+"</td>";
+			table = table + "</tr>";
+		})
+		$("#t_page").html(table);
+	}
+	
+	function showTable(page,pageSize,func) {
+		var start_time = getNull($("#start_time").val());
+		var stop_time = getNull($("#stop_time").val());
+		var channel = getChannel();
+		var pageNum = page;
+		$.ajax({
+			url:"../getDau.do",
+			dataType:"json",
+			type:"post",
+			contentType : "application/json",
+			data:JSON.stringify({
+				channel:channel,
+				startTime:start_time,
+				endTime:stop_time,
+				pageSize:pageSize,
+				pageNum:pageNum
+			}),
+			success:function(data){
+				if(data.code==1){
+					successOperater(data,pageSize,func);
+				}else if(data.code==0){
+					returnLogin();
+				}else{
+					alert(data.message);
+				}
+				
+			}
+		})
+	}
+	
+    function isLoaded() {
+        
+    }
+    function remove() {
+        $("#start_time").val("");
+        $("#stop_time").val("");
+    }
+    function formSubmit(){
+        
+    }
+    laydate.render({
+        elem: '#start_time'
+    });
+    laydate.render({
+        elem: '#stop_time'
+    });
+	var pageSize = 10;
+	showTable(1,pageSize,showPage);
+</script>
+</body>
+</html>

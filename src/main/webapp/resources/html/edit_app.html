@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <!--可以让部分国产浏览器默认采用高速模式渲染页面-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--让 IE 浏览器运行最新的渲染模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--确保适当的绘制和触屏缩放-->
+    <meta name="description" content=""/>
+    <!--网站描述-->
+    <meta name="keywords" content=""/>
+    <!--网站关键字-->
+
+    <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/amazeui.min.css"/>
+    <link rel="stylesheet" href="../css/admin.css">
+    <title>保险管理系统</title>
+</head>
+<body class="admin_content">
+<div class="am-cf">
+    <div class="admin_title">编辑游戏</div>
+    <div class="am-panel am-panel-default admin_panel">
+        <form action="edit_config_update.do" id="edit_config">
+            <div class="admin_createlist">
+                <ul>
+					<li><label class="am-form-label">游戏名:</label><span id="name" name="name"></li>
+                    <li><label class="am-form-label">游戏介绍:</label><input type="text" id="comment" name="comment"></li>
+                    <li><label class="am-form-label">热度:</label><input type="number" id="hot" name="hot"></li>
+                    <li><label class="am-form-label">标签:</label>
+						<span>热门<input type="checkbox" id="tag1"></span>
+						<span>新<input type="checkbox" id="tag2"></span>
+						<span>推荐<input type="checkbox" id="tag3"></span>
+					</li>
+                </ul>
+
+                <div class="am-btn-toolbar">
+                    <div class="am-btn-group am-btn-group-xs">
+                        <a href="javascrip:void();" target="mainframe"
+                           data-am-modal="{target: '#my-confirm', closeViaDimmer: 0}" class="admin_sub"> 确认提交</a>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm">
+    <div class="am-modal-dialog">
+        <div class="am-modal-bd">
+            重要数据,是否确定修改？
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+            <span class="am-modal-btn" data-am-modal-confirm onclick="formSubmit()">确定</span>
+        </div>
+    </div>
+</div>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="jsp/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="../js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="../js/amazeui.min.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+	function init(){
+		var url = getCurrentIframeUrlSearch();
+		if(url!=null&&url!='undefine'&&url!=""){
+			var requestParam = getUrlParams(url);
+			$.ajax({
+				url:"../getGameByKey.do",
+				dataType:"json",
+				type:"post",
+				contentType : "application/json",
+				data:JSON.stringify({
+					channelId:parseInt(requestParam.channel),
+					appId:parseInt(requestParam.app)
+				}),
+				success:function(data){
+					if(data.code==1){
+						$("#name").text(data.data.title);
+						$("#comment").val(data.data.description);
+						$("#hot").val(data.data.playerCount);
+						var tags = data.data.target.split(",");
+						if(tags!=null&&tags!=""){
+							for(var i=0;i<tags.length;i++){
+								$("#tag"+tags[i]).attr("checked","true");
+							}
+						}
+					}else if(data.code==0){
+						returnLogin();
+					}else{
+						alert(data.message);
+					}
+				}
+			})
+		}
+	}
+	
+    function formSubmit() {
+		var url = getCurrentIframeUrlSearch();
+		var requestParam = getUrlParams(url);
+		var tags = new Array();
+		if($("#tag1").prop("checked")){
+			tags.push(1);
+		}
+		if($("#tag2").prop("checked")){
+			tags.push(2);
+		}
+		if($("#tag3").prop("checked")){
+			tags.push(3);
+		}
+        $.ajax({
+			url:"../updateApps.do",
+			dataType:"json",
+			type:"post",
+			contentType : "application/json",
+			data:JSON.stringify({
+				channel:parseInt(requestParam.channel),
+				appId:parseInt(requestParam.app),
+				status:null,
+				tags:tags,
+				comment:$("#comment").val(),
+				hot:$("#hot").val()
+			}),
+			success:function(data){
+				if(data.code==1){
+					window.parent.frames["mainframe"].location.href="game_list.html";
+				}else if(data.code==0){
+					returnLogin();
+				}else{
+					alert(data.message);
+				}			
+			}
+		})
+		
+    }
+	init();
+</script>
+</body>
+</html>

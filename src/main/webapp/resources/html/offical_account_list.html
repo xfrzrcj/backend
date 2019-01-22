@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <!--可以让部分国产浏览器默认采用高速模式渲染页面-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--让 IE 浏览器运行最新的渲染模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--确保适当的绘制和触屏缩放-->
+    <meta name="description" content=""/>
+    <!--网站描述-->
+    <meta name="keywords" content=""/>
+    <!--网站关键字-->
+    <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/amazeui.min.css"/>
+    <link rel="stylesheet" href="../css/amazeui.page.css"/>
+    <link rel="stylesheet" href="../css/admin.css">
+    <title>中间平台管理系统</title>
+</head>
+
+<body class="admin_content">
+
+<div class="am-cf">
+    <div class="admin_title">用户列表</div>
+    <div class="am-panel am-panel-default admin_panel">
+        <form class="am-form" action="#" id="bet_list">
+            <div class="ad-select">
+				<div class="am-form-group">
+                    黑名单：	<select id = "status" name= "status">
+								  <option value ="2">全部</option>
+								  <option value ="0">是</option>
+								  <option value="1">否</option>
+								</select>
+                </div>
+                <div class="am-form-group">
+                    手机号：<input type="text" class="am-form-field" placeholder="输入手机号" id="phone"
+                                name="phone">
+                </div>
+				<div class="am-form-group">
+                    账号：<input type="text" class="am-form-field" placeholder="输入账户名" id="account"
+                                name="account">
+                </div>
+                <div class="am-form-group">
+                    账户名：<input type="text" class="am-form-field" placeholder="输入账户名" id="displayName"
+                                name="displayName">
+                </div>
+
+                <div class="am-form-group">
+                    注册开始时间：<input type="text" class="am-form-field" placeholder="选择日期"  id="registerStart" name="registerStart">
+                </div>
+
+                <div class="am-form-group">
+                    注册截止时间：<input type="text" class="am-form-field" placeholder="选择日期" id="registerEnd" name="registerEnd">
+                </div>
+				<div class="am-form-group">
+                    最后登录开始时间：<input type="text" class="am-form-field" placeholder="选择日期" id="loginStart" name="loginStart">
+                </div>
+				<div class="am-form-group">
+                    最后登录截止时间：<input type="text" class="am-form-field" placeholder="选择日期" id="loginEnd" name="loginEnd">
+                </div>
+				<div class="am-form-group">
+                    余额小于：<input type="number" class="am-form-field" placeholder="输入金额" id="moneyMax" name="moneyMax">
+                </div>
+				<div class="am-form-group">
+                    余额大于：<input type="number" class="am-form-field" placeholder="输入金额" id="moneyMin" name="moneyMin">
+                </div>
+				<div class="am-form-group">
+                    充值总额小于：<input type="number" class="am-form-field" placeholder="输入金额" id="rechargeMax" name="rechargeMax">
+                </div>
+				<div class="am-form-group">
+                    充值总额大于：<input type="number" class="am-form-field" placeholder="输入金额" id="rechargeMin" name="rechargeMin">
+                </div>
+                <div class="admin_search">
+                    <a href="javascript:formSubmit()">搜索</a>
+                    <a href="javascript:remove()" class="r-bg">清空</a>
+                </div>
+            </div>
+        </form>
+
+        <div class="am-g">
+
+            <table class="am-table am-table-striped am-table-hover admin_table">
+                <thead>
+                <tr>
+					<th>账号</th>
+                    <th>账户名</th>
+                    <th>手机号</th>
+                    <th>账户余额(PT)</th>
+					<th>冻结资金(PT)</th>
+					<th>充值总额<br>(单位PT)<br>(4小时更新)</th>
+                    <th>注册时间</th>
+                    <th>最后登陆时间</th>
+                    <th>活跃天数</th>
+                    <th>黑名单</th>
+                    <th>查看</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="t_page"></tbody>
+
+            </table>
+            <div class="am-cf admin_page">显示<span id="start_count"></span>到<span id="end_count"></span>项，共<span
+                    id="ad_count">2</span>项
+                <div class="am-fr" id="page_refresh">
+                    <div id="page"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="../js/amazeui.min.js"></script>
+<script src="../js/amazeui.page.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/laydate/laydate.js" charset="UTF-8"></script>
+<script type="text/javascript">
+	
+	function insertTable(data){
+		var table = "";
+		$.each(data.data.list,function(i,val){
+			table = table + "<tr>";
+			table = table + "<td>"+getValue(val.account)+"</td>";
+			table = table + "<td>"+getValue(val.displayName)+"</td>";
+			table = table + "<td>"+getValue(val.mobile)+"</td>";
+			table = table + "<td>"+val.balance+"</td>";
+			table = table + "<td>"+val.extractBalance+"</td>";
+			table = table + "<td>"+val.sumRecharge+"</td>";
+			table = table + "<td>"+val.createTime+"</td>";
+			table = table + "<td>"+val.updateTime+"</td>";
+			table = table + "<td>"+val.activeDays+"</td>";
+			if(val.status==1){
+				table = table + "<td>否</td>";
+			}else{
+				table = table + "<td>是</td>";
+			}
+			table = table + "<td><a href=\"javascrip:void();\" target=\"mainframe\" class=\"am-btn am-btn-default am-radius admin_whitebg\">查看账户详情</a></td>";
+			var ban = val.status==1?"加入黑名单":"取消黑名单";
+			table = table + "<td><a href=\"javascrip:void();\" target=\"mainframe\" class=\"am-btn am-btn-default am-radius admin_whitebg\">"+ban+"</a></td>";
+			table = table + "</tr>";
+		})
+		$("#t_page").html(table);
+	}
+	
+	
+	
+    function showTable() {
+		var status = $("#status").val();
+		status=status==""?null:status;
+		var phone = $("#phone").val();
+		phone=phone==""?null:phone;
+		var account = $("#account").val();
+		account=account==""?null:account;
+		var registerStart = $("#registerStart").val();
+		registerStart=registerStart==""?null:registerStart;
+		var registerEnd = $("#registerEnd").val();
+		registerEnd=registerEnd==""?null:registerEnd;
+		var loginStart = $("#loginStart").val();
+		loginStart=loginStart==""?null:loginStart;
+		var loginEnd = $("#loginEnd").val();
+		loginEnd=loginEnd==""?null:loginEnd;
+		var moneyMax = $("#moneyMax").val();
+		moneyMax=moneyMax==""?null:moneyMax;
+		var moneyMin = $("#moneyMin").val();
+		moneyMin=moneyMin==""?null:moneyMin;
+		var rechargeMax = $("#rechargeMax").val();
+		rechargeMax=rechargeMax==""?null:rechargeMax;
+		var rechargeMin = $("#rechargeMin").val();
+		rechargeMin=rechargeMin==""?null:rechargeMin;
+		var displayName = $("#displayName").val();
+		displayName=displayName==""?null:displayName;
+		$.ajax({
+			url:"../getUserList",
+			dataType:"json",
+			type:"post",
+			contentType : "application/json",
+			data:JSON.stringify({
+				status:status,
+				mobile:phone,
+				account:account,
+				createTimeStart:registerStart,
+				createTimeEnd:registerEnd,
+				updateTimeStart:loginStart,
+				updateTimeEnd:loginEnd,
+				balanceMax:moneyMax,
+				balanceMin:moneyMin,
+				rechargeMin:rechargeMin,
+				rechargeMax:rechargeMax,
+				channel:1,
+				displayName:displayName,
+				pageNum:1,
+				pageSize:10
+			}),
+			success:function(data){
+				if(data.code==1){
+					insertTable(data);
+				}
+			}
+		})
+        
+    }
+	showTable();
+    function remove() {
+        $("#black").val("2");
+        $("#phone").val("");
+		$("#displayName").val("");
+        $("#account").val("");
+        $("#registerStart").val("");
+        $("#registerEnd").val("");
+		$("#loginStart").val("");
+		$("#moneyMax").val("");
+		$("#moneyMin").val("");
+		$("#loginEnd").val("");
+		$("#rechargeMax").val("");
+		$("#rechargeMin").val("");
+        //formSubmit();
+    }
+	laydate.render({
+        elem: '#registerStart'
+        ,type: 'datetime'
+    });
+    laydate.render({
+        elem: '#registerEnd'
+        ,type: 'datetime'
+    });
+	laydate.render({
+        elem: '#loginStart'
+        ,type: 'datetime'
+    });
+	laydate.render({
+        elem: '#loginEnd'
+        ,type: 'datetime'
+    });
+</script>
+</body>
+</html>

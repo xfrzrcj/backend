@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN">
+<head>
+    <meta name="renderer" content="webkit">
+    <!--可以让部分国产浏览器默认采用高速模式渲染页面-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--让 IE 浏览器运行最新的渲染模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--确保适当的绘制和触屏缩放-->
+    <meta name="description" content=""/>
+    <!--网站描述-->
+    <meta name="keywords" content=""/>
+    <!--网站关键字-->
+
+    <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/amazeui.min.css"/>
+    <link rel="stylesheet" href="../css/admin.css">
+    <title></title>
+</head>
+<body class="login_body">
+
+<div class="ad_login">
+    <div class="am-form">
+
+        <div class="admin_error" id="show"></div>
+
+        <div class="am-form-group am-form-icon">
+            <i class="am-icon-user"></i>
+            <input id="name" name="name" type="text" class="am-form-field am-radius">
+        </div>
+        <div class="am-form-group am-form-icon">
+            <i class="am-icon-lock"></i>
+            <input id="password" name="password" type="password" class="am-form-field am-radius">
+        </div>
+        <div class="am-form-group">
+            <button onclick="sumbit()" class="am-btn am-radius">登&nbsp;&nbsp;录</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/MD5.js"></script>
+<script type="application/javascript">
+	function sumbit() {
+		var password =  $("#password").val();
+		var name = $("#name").val();
+		$.post("../login.do",{name:name,password:password},function(data){
+			if(data==true){
+				$(window).attr('location','./main.html')
+			}else{
+				alert("用户名或账号错误");
+			}
+		})
+	}
+</script>
+</body>
+</html>
